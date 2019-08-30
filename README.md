@@ -16,4 +16,5 @@ module "webserver_cluster" {
 }
 
 Running
+
 $ terraform init && terraform plan && terraform apply
