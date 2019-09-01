@@ -29,3 +29,8 @@ output "asg_name" {
   description = "O nome do grupo de escalonamento automático" 
 }
 */
+
+variable "enable_autoscaling" {
+  description = "true para ativar agendamento do ASG e false para desativar"
+  type  = bool
+}

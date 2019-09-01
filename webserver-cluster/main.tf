@@ -99,25 +99,29 @@ resource "aws_autoscaling_group" "example" {
   } 
 }
 
-/*
 // Agendamento automatico do AutoScalingGroup - Add + instancias as 9h
 resource "aws_autoscaling_schedule" "scale_out_business_hours" {
+  count                 = var.enable_autoscaling ? 1 : 0
   scheduled_action_name = "scale-out-during-business-hours"
   min_size              = var.min_size
   max_size              = var.max_size
   desired_capacity      = var.min_size
   recurrence            = "0 9 * * *"
+
+  autoscaling_group_name = aws_autoscaling_group.example.name
 }
 
 // Agendamento automatico do AutoScalingGroup - Remove instancias as 17h
 resource "aws_autoscaling_schedule" "scale_in_at_night" {
+  count                 = var.enable_autoscaling ? 1 : 0
   scheduled_action_name = "scale-in-at-night"
   min_size              = var.min_size
   max_size              = var.max_size
   desired_capacity      = var.min_size
   recurrence            = "0 17 * * *"
+
+  autoscaling_group_name = aws_autoscaling_group.example.name
 }
-*/
 
 // LoadBalancer
 resource "aws_elb" "example" { 
