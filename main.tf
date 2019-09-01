@@ -4,7 +4,7 @@ provider "aws" {
 
 module "webserver_cluster" { 
   // Autenticando via SSH em repositório privado
-  source = "git::git@github.com:alysonfranklin/terraform-modules.git//webserver-cluster?ref=v0.0.1" 
+  source = "git::git@github.com:alysonfranklin/terraform-modules.git//webserver-cluster?ref=stable" 
 
   // Baixando de repositório publico
   //source = "github.com/alysonfranklin/terraform-modules//webserver-cluster?ref=v0.0.1" 
