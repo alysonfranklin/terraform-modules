@@ -34,23 +34,6 @@ data "aws_ami" "ubuntu" {
     }
 }
 
-/*
-resource "aws_instance" "example" { 
-  ami = data.aws_ami.amazon_linux.id
-  instance_type = var.instance_type 
-  vpc_security_group_ids  = [aws_security_group.instance.id]
-
-  user_data = <<-EOF
-              #!/bin/bash
-              echo "Hello, World" > index.html
-              nohup busybox httpd -f -p "${var.server_port}" &
-              EOF
-    tags = { 
-    Name = "${var.cluster_name}-instance" 
-  }
-}
-*/
-
 resource "aws_security_group" "instance" {
   name = "${var.cluster_name}-instance"
   ingress {
@@ -65,7 +48,9 @@ resource "aws_security_group" "instance" {
 
 // LaunchConfiguration - Template do ASG
 resource "aws_launch_configuration" "example" {
-  image_id        = data.aws_ami.amazon_linux.id
+  # Ubuntu Server 18.04 LTS (HVM), SSD Volume Type in us-east-2
+  image_id        = "ami-0c55b159cbfafe1f0"
+  # image_id        = data.aws_ami.amazon_linux.id
   instance_type   = var.instance_type
   security_groups = [aws_security_group.instance.id]
   user_data = <<-EOF
