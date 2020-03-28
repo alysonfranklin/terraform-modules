@@ -1,9 +1,9 @@
 terraform {
   backend "s3" {
-    bucket         = "elo7-devops-engineer"
+    bucket         = "company-devops-engineer"
     key            = "terraform/ecs-staging/terraform.tfstate"
     region         = "us-east-1"
-    dynamodb_table = "elo7_project-terraform-locking"
+    dynamodb_table = "company_project-terraform-locking"
     encrypt        = true
   }
 }
@@ -13,12 +13,12 @@ data "aws_caller_identity" "current" {
 
 // Cria uma tabela no DynamoDB para lock do estado do terraform
 module "dynamodb" {
-  source               = "./modules/dynamodb"
-  dynamo_db_table_name = "elo7_project-terraform-locking"
+  source               = "git::git@github.com:alysonfranklin/terraform-modules.git//modules/dynamodb?ref=v0.0.1"
+  dynamo_db_table_name = "company_project-terraform-locking"
 }
 
 module "vpc" {
-  source = "./modules/vpc"
+  source = "git::git@github.com:alysonfranklin/terraform-modules.git//modules/vpc?ref=v0.0.1"
   name   = "vpc-${var.ENVIRONMENT}"
   cidr   = "10.0.0.0/16"
 
@@ -55,9 +55,9 @@ module "vpc" {
 }
 
 module "my-ecs" {
-  source               = "./modules/ecs-cluster"
+  source               = "git::git@github.com:alysonfranklin/terraform-modules.git//modules/ecs-cluster?ref=v0.0.1"
   VPC_ID               = module.vpc.vpc_id
-  CLUSTER_NAME         = "ecs-elo7"
+  CLUSTER_NAME         = "ecs-company"
   INSTANCE_TYPE        = "t2.micro"
   SSH_KEY_NAME         = aws_key_pair.mykeypair.key_name
   VPC_SUBNETS          = join(",", module.vpc.private_subnets)
@@ -72,7 +72,7 @@ module "my-ecs" {
 }
 
 module "my-service" {
-  source              = "./modules/ecs-service"
+  source              = "git::git@github.com:alysonfranklin/terraform-modules.git//modules/ecs-service?ref=v0.0.1"
   VPC_ID              = module.vpc.vpc_id
   APPLICATION_NAME    = "my-service"
   APPLICATION_PORT    = "8080"
@@ -83,28 +83,28 @@ module "my-service" {
   HEALTHCHECK_MATCHER = "200"
   CPU_RESERVATION     = "256"
   MEMORY_RESERVATION  = "128"
-  LOG_GROUP           = "elo7"
+  LOG_GROUP           = "company"
   DESIRED_COUNT       = 2
   ALB_ARN             = module.my-alb.alb_arn
 }
 
 module "my-alb" {
-  source             = "./modules/alb"
+  source             = "git::git@github.com:alysonfranklin/terraform-modules.git//modules/alb?ref=v0.0.1"
   VPC_ID             = module.vpc.vpc_id
   ALB_NAME           = "my-alb"
   VPC_SUBNETS        = join(",", module.vpc.public_subnets)
   DEFAULT_TARGET_ARN = module.my-service.target_group_arn
-  #  DOMAIN             = "*.ecs.elo"
+  #  DOMAIN             = "*.une.org.br"
   INTERNAL = false
   ECS_SG   = module.my-ecs.cluster_sg
 }
 
 module "my-alb-rule" {
-  source           = "./modules/alb-rule"
+  source           = "git::git@github.com:alysonfranklin/terraform-modules.git//modules/alb-rule?ref=v0.0.1"
   LISTENER_ARN     = module.my-alb.http_listener_arn
   PRIORITY         = 100
   TARGET_GROUP_ARN = module.my-service.target_group_arn
   CONDITION_FIELD  = "host-header"
-  CONDITION_VALUES = ["subdomain.ecs.elo"]
+  CONDITION_VALUES = ["test-une.org.br"]
 }
 

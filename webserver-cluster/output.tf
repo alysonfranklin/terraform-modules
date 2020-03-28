@@ -4,7 +4,7 @@
 }
 */
 
-output "DNS_Name" { 
-  value = aws_elb.example.dns_name
-  description = "DNS do LoadBalancer" 
+output "DNS_Name" {
+  value       = aws_elb.example.dns_name
+  description = "DNS do LoadBalancer"
 }
