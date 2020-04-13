@@ -12,7 +12,7 @@ provider "aws" {
 }
 
 module "ssm-parameter-store" {
-  source = "git::https://github.com/cloudposse/terraform-aws-ssm-parameter-store?ref=master"
+  source = "github.com/alysonfranklin/terraform-modules.git//modules/ssm-parameter-store?ref=v0.0.1"
   parameter_write = [{
     name        = "/prod/databases/project-name"
     value       = "password!@#"
