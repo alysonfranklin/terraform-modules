@@ -1,7 +1,7 @@
 // ECR 
 
 resource "aws_ecr_repository" "ecs-service" {
-  name = var.APPLICATION_NAME
+  name = var.SERVICE_NAME
 }
 
 // Obtenha a revisão ativa mais recente
@@ -16,7 +16,7 @@ data "template_file" "ecs-service" {
   template = file("${path.module}/ecs-service.json")
 
   vars = {
-    APPLICATION_NAME    = var.APPLICATION_NAME
+    APPLICATION_NAME    = var.SERVICE_NAME
     APPLICATION_PORT    = var.APPLICATION_PORT
     APPLICATION_VERSION = var.APPLICATION_VERSION
     ECR_URL             = aws_ecr_repository.ecs-service.repository_url
@@ -30,7 +30,7 @@ data "template_file" "ecs-service" {
 // Task definition
 
 resource "aws_ecs_task_definition" "ecs-service-taskdef" {
-  family                = var.APPLICATION_NAME
+  family                = var.SERVICE_NAME
   container_definitions = data.template_file.ecs-service.rendered
   task_role_arn         = var.TASK_ROLE_ARN
 }
@@ -38,7 +38,7 @@ resource "aws_ecs_task_definition" "ecs-service-taskdef" {
 // ECS Service
 
 resource "aws_ecs_service" "ecs-service" {
-  name    = var.APPLICATION_NAME
+  name    = var.SERVICE_NAME
   cluster = var.CLUSTER_ARN
   task_definition = "${aws_ecs_task_definition.ecs-service-taskdef.family}:${max(
     aws_ecs_task_definition.ecs-service-taskdef.revision,
@@ -51,7 +51,7 @@ resource "aws_ecs_service" "ecs-service" {
 
   load_balancer {
     target_group_arn = aws_alb_target_group.ecs-service.id
-    container_name   = var.APPLICATION_NAME
+    container_name   = var.SERVICE_NAME
     container_port   = var.APPLICATION_PORT
   }
 
