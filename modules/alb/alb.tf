@@ -19,7 +19,7 @@ data "aws_acm_certificate" "certificate" {
 resource "aws_alb_listener" "alb-https" {
   load_balancer_arn = aws_alb.alb.arn
   port              = "443"
-  protocol          = "HTTP"
+  protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
   certificate_arn   = data.aws_acm_certificate.certificate.arn
 
