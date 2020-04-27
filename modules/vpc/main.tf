@@ -36,6 +36,7 @@ resource "aws_vpc" "this" {
     },
     var.tags,
     var.vpc_tags,
+    var.DEFAULT_TAGS,
   )
 }
 
@@ -65,6 +66,7 @@ resource "aws_vpc_dhcp_options" "this" {
     },
     var.tags,
     var.dhcp_options_tags,
+    var.DEFAULT_TAGS,
   )
 }
 
@@ -92,6 +94,7 @@ resource "aws_internet_gateway" "this" {
     },
     var.tags,
     var.igw_tags,
+    var.DEFAULT_TAGS,
   )
 }
 
@@ -109,6 +112,7 @@ resource "aws_route_table" "public" {
     },
     var.tags,
     var.public_route_table_tags,
+    var.DEFAULT_TAGS,
   )
 }
 
@@ -143,6 +147,7 @@ resource "aws_route_table" "private" {
     },
     var.tags,
     var.private_route_table_tags,
+    var.DEFAULT_TAGS,
   )
 
   lifecycle {
@@ -163,6 +168,7 @@ resource "aws_route_table" "database" {
   tags = merge(
     var.tags,
     var.database_route_table_tags,
+    var.DEFAULT_TAGS,
     {
       "Name" = "${var.name}-${var.database_subnet_suffix}"
     },
@@ -204,6 +210,7 @@ resource "aws_route_table" "redshift" {
   tags = merge(
     var.tags,
     var.redshift_route_table_tags,
+    var.DEFAULT_TAGS,
     {
       "Name" = "${var.name}-${var.redshift_subnet_suffix}"
     },
@@ -221,6 +228,7 @@ resource "aws_route_table" "elasticache" {
   tags = merge(
     var.tags,
     var.elasticache_route_table_tags,
+    var.DEFAULT_TAGS,
     {
       "Name" = "${var.name}-${var.elasticache_subnet_suffix}"
     },
@@ -241,6 +249,7 @@ resource "aws_route_table" "intra" {
     },
     var.tags,
     var.intra_route_table_tags,
+    var.DEFAULT_TAGS,
   )
 }
 
@@ -265,6 +274,7 @@ resource "aws_subnet" "public" {
     },
     var.tags,
     var.public_subnet_tags,
+    var.DEFAULT_TAGS,
   )
 }
 
@@ -288,6 +298,7 @@ resource "aws_subnet" "private" {
     },
     var.tags,
     var.private_subnet_tags,
+    var.DEFAULT_TAGS,
   )
 }
 
@@ -311,6 +322,7 @@ resource "aws_subnet" "database" {
     },
     var.tags,
     var.database_subnet_tags,
+    var.DEFAULT_TAGS,
   )
 }
 
@@ -327,6 +339,7 @@ resource "aws_db_subnet_group" "database" {
     },
     var.tags,
     var.database_subnet_group_tags,
+    var.DEFAULT_TAGS,
   )
 }
 
@@ -350,6 +363,7 @@ resource "aws_subnet" "redshift" {
     },
     var.tags,
     var.redshift_subnet_tags,
+    var.DEFAULT_TAGS,
   )
 }
 
@@ -366,6 +380,7 @@ resource "aws_redshift_subnet_group" "redshift" {
     },
     var.tags,
     var.redshift_subnet_group_tags,
+    var.DEFAULT_TAGS,
   )
 }
 
@@ -389,6 +404,7 @@ resource "aws_subnet" "elasticache" {
     },
     var.tags,
     var.elasticache_subnet_tags,
+    var.DEFAULT_TAGS,
   )
 }
 
@@ -420,6 +436,7 @@ resource "aws_subnet" "intra" {
     },
     var.tags,
     var.intra_subnet_tags,
+    var.DEFAULT_TAGS,
   )
 }
 
@@ -466,6 +483,7 @@ resource "aws_default_network_acl" "this" {
     },
     var.tags,
     var.default_network_acl_tags,
+    var.DEFAULT_TAGS,
   )
 
   lifecycle {
@@ -488,6 +506,7 @@ resource "aws_network_acl" "public" {
     },
     var.tags,
     var.public_acl_tags,
+    var.DEFAULT_TAGS,
   )
 }
 
@@ -534,6 +553,7 @@ resource "aws_network_acl" "private" {
     },
     var.tags,
     var.private_acl_tags,
+    var.DEFAULT_TAGS,
   )
 }
 
@@ -580,6 +600,7 @@ resource "aws_network_acl" "intra" {
     },
     var.tags,
     var.intra_acl_tags,
+    var.DEFAULT_TAGS,
   )
 }
 
@@ -626,6 +647,7 @@ resource "aws_network_acl" "database" {
     },
     var.tags,
     var.database_acl_tags,
+    var.DEFAULT_TAGS,
   )
 }
 
@@ -672,6 +694,7 @@ resource "aws_network_acl" "redshift" {
     },
     var.tags,
     var.redshift_acl_tags,
+    var.DEFAULT_TAGS,
   )
 }
 
@@ -718,6 +741,7 @@ resource "aws_network_acl" "elasticache" {
     },
     var.tags,
     var.elasticache_acl_tags,
+    var.DEFAULT_TAGS,
   )
 }
 
@@ -779,6 +803,7 @@ resource "aws_eip" "nat" {
     },
     var.tags,
     var.nat_eip_tags,
+    var.DEFAULT_TAGS,
   )
 }
 
@@ -804,6 +829,7 @@ resource "aws_nat_gateway" "this" {
     },
     var.tags,
     var.nat_gateway_tags,
+    var.DEFAULT_TAGS,
   )
 
   depends_on = [aws_internet_gateway.this]
@@ -1368,6 +1394,7 @@ resource "aws_vpn_gateway" "this" {
     },
     var.tags,
     var.vpn_gateway_tags,
+    var.DEFAULT_TAGS,
   )
 }
 
@@ -1420,6 +1447,7 @@ resource "aws_default_vpc" "this" {
     },
     var.tags,
     var.default_vpc_tags,
+    var.DEFAULT_TAGS,
   )
 }
 

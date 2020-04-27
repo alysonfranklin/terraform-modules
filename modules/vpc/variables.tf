@@ -1208,3 +1208,7 @@ variable "elasticache_outbound_acl_rules" {
   ]
 }
 
+variable "DEFAULT_TAGS" {
+  type    = map
+  default = {}
+}
