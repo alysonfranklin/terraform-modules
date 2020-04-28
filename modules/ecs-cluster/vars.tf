@@ -46,3 +46,7 @@ variable "SSH_SG" {
   default = ""
 }
 
+variable "DEFAULT_TAGS" {
+  type    = map
+  default = {}
+}

@@ -7,9 +7,6 @@ variable "AWS_REGION" {
 variable "APPLICATION_NAME" {
 }
 
-variable "SERVICE_NAME" {
-}
-
 variable "APPLICATION_PORT" {
 }
 
@@ -41,6 +38,26 @@ variable "HEALTHCHECK_MATCHER" {
   default = "200"
 }
 
+variable "UNHEALTHY_THRESHOLD" {
+  default = "3"
+}
+
+variable "HEALTHY_THRESHOLD" {
+  default = "3"
+}
+
+variable "HEALTH_CHECK_INTERVAL" {
+  default = "10"
+}
+
+variable "HEALTH_CHECK_PATH" {
+  default = "/"
+}
+
+variable "LOAD_BALANCING_ALGORITHM_TYPE" {
+  default = "round_robin"
+}
+
 variable "CPU_RESERVATION" {
 }
 
@@ -57,3 +74,7 @@ variable "TASK_ROLE_ARN" {
 variable "ALB_ARN" {
 }
 
+variable "DEFAULT_TAGS" {
+  type = map
+  default = {}
+}

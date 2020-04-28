@@ -1,6 +1,6 @@
 // target
 resource "aws_alb_target_group" "ecs-service" {
-  name = "${var.SERVICE_NAME}-${substr(
+  name = "${var.APPLICATION_NAME}-${substr(
     md5(
       format(
         "%s%s%s",
@@ -12,18 +12,19 @@ resource "aws_alb_target_group" "ecs-service" {
     0,
     12,
   )}"
-  port                 = var.APPLICATION_PORT
-  protocol             = "HTTP"
-  vpc_id               = var.VPC_ID
-  deregistration_delay = var.DEREGISTRATION_DELAY
+  port                          = var.APPLICATION_PORT
+  protocol                      = "HTTP"
+  vpc_id                        = var.VPC_ID
+  deregistration_delay          = var.DEREGISTRATION_DELAY
+  load_balancing_algorithm_type = var.LOAD_BALANCING_ALGORITHM_TYPE
+  tags                          = var.DEFAULT_TAGS
 
   health_check {
-    healthy_threshold   = 3
-    unhealthy_threshold = 3
+    healthy_threshold   = var.HEALTHY_THRESHOLD
+    unhealthy_threshold = var.UNHEALTHY_THRESHOLD
     protocol            = "HTTP"
-    path                = "/"
-    interval            = 10
+    path                = var.HEALTH_CHECK_PATH
+    interval            = var.HEALTH_CHECK_INTERVAL
     matcher             = var.HEALTHCHECK_MATCHER
   }
 }
-

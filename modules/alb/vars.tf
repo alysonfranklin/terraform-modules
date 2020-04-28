@@ -20,3 +20,7 @@ variable "ECS_SG" {
   default = ""
 }
 
+variable "DEFAULT_TAGS" {
+  type    = map
+  default = {}
+}

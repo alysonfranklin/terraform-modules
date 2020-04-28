@@ -6,7 +6,8 @@ resource "aws_alb" "alb" {
   security_groups = [aws_security_group.alb.id]
   subnets         = split(",", var.VPC_SUBNETS)
 
-  enable_deletion_protection = false
+  enable_deletion_protection = true
+  tags                       = var.DEFAULT_TAGS
 }
 
 # certificate
@@ -40,3 +41,4 @@ resource "aws_alb_listener" "alb-http" {
     type             = "forward"
   }
 }
+
