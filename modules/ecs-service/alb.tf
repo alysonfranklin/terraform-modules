@@ -27,4 +27,8 @@ resource "aws_alb_target_group" "ecs-service" {
     interval            = var.HEALTH_CHECK_INTERVAL
     matcher             = var.HEALTHCHECK_MATCHER
   }
+    stickiness {
+    type = "lb_cookie"
+    enabled = var.ENABLE_STICKINESS
+  }
 }

@@ -77,6 +77,11 @@ variable "TASK_ROLE_ARN" {
 variable "ALB_ARN" {
 }
 
+variable "ENABLE_STICKINESS" {
+  type        = bool
+  default     = false
+}
+
 variable "DEFAULT_TAGS" {
   type = map
   default = {}
