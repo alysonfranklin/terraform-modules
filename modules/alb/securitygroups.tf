@@ -2,6 +2,7 @@ resource "aws_security_group" "alb" {
   name        = var.ALB_NAME
   vpc_id      = var.VPC_ID
   description = var.ALB_NAME
+  tags        = var.DEFAULT_TAGS
 
   ingress {
     from_port   = 80
