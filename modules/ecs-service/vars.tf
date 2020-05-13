@@ -7,8 +7,8 @@ variable "AWS_REGION" {
 variable "APPLICATION_NAME" {
 }
 
-variable "SERVICE_NAME" {
-}
+#variable "SERVICE_NAME" {
+#}
 
 variable "APPLICATION_PORT" {
 }
