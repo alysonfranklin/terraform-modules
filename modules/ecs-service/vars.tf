@@ -7,9 +7,6 @@ variable "AWS_REGION" {
 variable "APPLICATION_NAME" {
 }
 
-#variable "SERVICE_NAME" {
-#}
-
 variable "APPLICATION_PORT" {
 }
 
@@ -82,9 +79,9 @@ variable "ENABLE_STICKINESS" {
   default     = false
 }
 
-variable "CREATE_REPOSITORY" {
+variable "CREATE_ECR" {
+  description = "Cria repositório ECR ou não?"
   type = bool
-  default = true
 }
 
 variable "DEFAULT_TAGS" {
