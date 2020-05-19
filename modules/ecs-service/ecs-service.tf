@@ -20,7 +20,8 @@ data "template_file" "ecs-service" {
     APPLICATION_NAME    = var.APPLICATION_NAME
     APPLICATION_PORT    = var.APPLICATION_PORT
     APPLICATION_VERSION = var.APPLICATION_VERSION
-    ECR_URL             = aws_ecr_repository.ecs-service.repository_url
+    ECR_URL             = aws_ecr_repository.ecs-service[count.index]
+    #ECR_URL             = aws_ecr_repository.ecs-service.repository_url
     AWS_REGION          = var.AWS_REGION
     CPU_RESERVATION     = var.CPU_RESERVATION
     MEMORY_RESERVATION  = var.MEMORY_RESERVATION
