@@ -82,6 +82,11 @@ variable "ENABLE_STICKINESS" {
   default     = false
 }
 
+variable "CREATE_REPOSITORY" {
+  type = bool
+  default = true
+}
+
 variable "DEFAULT_TAGS" {
   type = map
   default = {}

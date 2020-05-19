@@ -1,6 +1,7 @@
 // ECR 
 
 resource "aws_ecr_repository" "ecs-service" {
+  count = var.CREATE_REPOSITORY ? 1 : 0
   name = var.APPLICATION_NAME
 }
 
