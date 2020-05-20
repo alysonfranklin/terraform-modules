@@ -50,3 +50,33 @@ variable "DEFAULT_TAGS" {
   type    = map
   default = {}
 }
+
+variable "ENABLE_ASG_SCHEDULE" {
+  description = "Se definido como true, ative o dimensionamento automático"
+  type        = bool
+}
+
+variable "SCHEDULE_MIN_SIZE" {
+  description = "O número mínimo de instâncias EC2 no schedule do ASG"
+  type        = number
+}
+
+variable "SCHEDULE_MAX_SIZE" {
+  description = "O número máximo de instâncias EC2 no schedule do ASG"
+  type        = number
+
+}
+variable "SCHEDULE_DESIRED_CAPACITY" {
+  description = "O número desejado de instâncias EC2 no schedule do ASG"
+  type        = number
+}
+
+variable "SCHEDULE_IN_NIGHT" {
+  description = "Dimensionar o número de instâncias EC2 depois do horário comercial"
+  type = string
+}
+
+variable "SCHEDULE_OUT_BUSINESS_HOURS" {
+  description = "Dimensionar o número de instâncias EC2 no horário comercial"
+  type = string
+}
