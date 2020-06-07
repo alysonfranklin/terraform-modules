@@ -105,6 +105,6 @@ module "my-alb-rule" {
   PRIORITY         = 100
   TARGET_GROUP_ARN = module.my-service.target_group_arn
   CONDITION_FIELD  = "host-header"
-  CONDITION_VALUES = ["test-une.org.br"]
+  CONDITION_VALUES = ["test.example.com"]
 }
 
