@@ -94,7 +94,7 @@ module "my-alb" {
   ALB_NAME           = "my-alb"
   VPC_SUBNETS        = join(",", module.vpc.public_subnets)
   DEFAULT_TARGET_ARN = module.my-service.target_group_arn
-  #  DOMAIN             = "*.une.org.br"
+  #  DOMAIN             = "*.example.com"
   INTERNAL = false
   ECS_SG   = module.my-ecs.cluster_sg
 }
