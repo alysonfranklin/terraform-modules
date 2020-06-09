@@ -99,10 +99,7 @@ resource "aws_iam_role_policy" "cluster-ec2-role" {
               "ecr:BatchGetImage",
               "logs:CreateLogStream",
               "logs:PutLogEvents",
-              "ssmmessages:CreateControlChannel",
-              "ssmmessages:CreateDataChannel",
-              "ssmmessages:OpenControlChannel",
-              "ssmmessages:OpenDataChannel"
+              "ssm:*"
             ],
             "Resource": "*"
         },
@@ -112,7 +109,7 @@ resource "aws_iam_role_policy" "cluster-ec2-role" {
               "logs:*"
           ],
           "Resource": [
-              "arn:aws:logs:${var.AWS_REGION}:${var.AWS_ACCOUNT_ID}:log-group:${var.LOG_GROUP}:*"
+              "*"
           ]
         }
     ]
