@@ -99,7 +99,7 @@ resource "aws_iam_role_policy" "cluster-ec2-role" {
               "ecr:BatchGetImage",
               "logs:CreateLogStream",
               "logs:PutLogEvents",
-              "ssm:*"
+              "ssm:GetParameters"
             ],
             "Resource": "*"
         },
@@ -117,4 +117,3 @@ resource "aws_iam_role_policy" "cluster-ec2-role" {
 EOF
 
 }
-

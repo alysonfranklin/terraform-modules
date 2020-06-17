@@ -4,9 +4,6 @@ variable "AWS_ACCOUNT_ID" {
 variable "AWS_REGION" {
 }
 
-variable "LOG_GROUP" {
-}
-
 variable "VPC_ID" {
 }
 
