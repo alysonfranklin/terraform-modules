@@ -99,18 +99,10 @@ resource "aws_iam_role_policy" "cluster-ec2-role" {
               "ecr:BatchGetImage",
               "logs:CreateLogStream",
               "logs:PutLogEvents",
+              "logs:CreateLogGroup",
               "ssm:GetParameters"
             ],
             "Resource": "*"
-        },
-        {
-          "Effect": "Allow",
-          "Action": [
-              "logs:*"
-          ],
-          "Resource": [
-              "*"
-          ]
         }
     ]
 }
