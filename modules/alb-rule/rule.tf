@@ -24,8 +24,15 @@ resource "aws_lb_listener_rule" "alb_rule" {
   }
 
   condition {
-    field  = var.CONDITION_FIELD
-    values = var.CONDITION_VALUES
+    path_pattern {
+      values = var.CONDITION_VALUES
+    }
+  }
+
+  condition {
+    host_header {
+      values = [var.CONDITION_FIELD]
+    }
   }
 
 }

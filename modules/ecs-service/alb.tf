@@ -10,7 +10,7 @@ resource "aws_alb_target_group" "ecs-service" {
       ),
     ),
     0,
-    12,
+    5,
   )}"
   port                          = var.APPLICATION_PORT
   protocol                      = "HTTP"
