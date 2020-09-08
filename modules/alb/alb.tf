@@ -10,19 +10,21 @@ resource "aws_alb" "alb" {
   tags                       = var.DEFAULT_TAGS
 }
 
+/*
 # certificate
 data "aws_acm_certificate" "certificate" {
   domain   = var.DOMAIN
   statuses = ["ISSUED", "PENDING_VALIDATION"]
 }
+*/
 
 # alb listener (https)
 resource "aws_alb_listener" "alb-https" {
   load_balancer_arn = aws_alb.alb.arn
   port              = "443"
-  protocol          = "HTTPS"
-  ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn   = data.aws_acm_certificate.certificate.arn
+  protocol          = "HTTP"
+  #ssl_policy        = "ELBSecurityPolicy-2016-08"
+  #certificate_arn   = data.aws_acm_certificate.certificate.arn
 
   default_action {
     target_group_arn = var.DEFAULT_TARGET_ARN
