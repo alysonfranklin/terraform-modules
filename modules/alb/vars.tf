@@ -24,3 +24,9 @@ variable "DEFAULT_TAGS" {
   type    = map
   default = {}
 }
+
+variable "ENABLE_DELETION_PROTECTION_ALB" {
+  type = bool
+  description = "Habilita proteção contra exclusão acidental do Loadbalancer"
+  default = false
+}
