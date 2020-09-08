@@ -1,7 +1,7 @@
 [
   {
     "name": "${APPLICATION_NAME}",
-    "image": "${APPLICATION_VERSION}",
+    "image": "${APPLICATION_NAME}/${APPLICATION_NAME}",
     "cpu": ${CPU_RESERVATION},
     "memoryReservation": ${MEMORY_RESERVATION},
     "essential": true,
