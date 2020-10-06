@@ -1,6 +1,6 @@
 // target
 resource "aws_alb_target_group" "ecs-service" {
-  name = var.APPLICATION_NAME
+  name                          = var.APPLICATION_NAME
   port                          = var.APPLICATION_PORT
   protocol                      = "HTTP"
   vpc_id                        = var.VPC_ID
@@ -16,8 +16,8 @@ resource "aws_alb_target_group" "ecs-service" {
     interval            = var.HEALTH_CHECK_INTERVAL
     matcher             = var.HEALTHCHECK_MATCHER
   }
-    stickiness {
-    type = "lb_cookie"
+  stickiness {
+    type    = "lb_cookie"
     enabled = var.ENABLE_STICKINESS
   }
 }

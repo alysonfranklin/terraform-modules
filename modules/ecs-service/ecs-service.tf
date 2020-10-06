@@ -2,7 +2,7 @@
 
 resource "aws_ecr_repository" "ecs-service" {
   count = var.CREATE_ECR ? 1 : 0
-  name = var.APPLICATION_NAME
+  name  = var.APPLICATION_NAME
 }
 
 // Obtenha a revisão ativa mais recente
@@ -21,10 +21,10 @@ data "template_file" "ecs-service" {
     APPLICATION_PORT    = var.APPLICATION_PORT
     APPLICATION_VERSION = var.APPLICATION_VERSION
     #ECR_URL             = aws_ecr_repository.ecs-service.repository_url
-    AWS_REGION          = var.AWS_REGION
-    CPU_RESERVATION     = var.CPU_RESERVATION
-    MEMORY_RESERVATION  = var.MEMORY_RESERVATION
-    LOG_GROUP           = var.LOG_GROUP
+    AWS_REGION         = var.AWS_REGION
+    CPU_RESERVATION    = var.CPU_RESERVATION
+    MEMORY_RESERVATION = var.MEMORY_RESERVATION
+    LOG_GROUP          = var.LOG_GROUP
   }
 }
 
