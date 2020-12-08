@@ -46,7 +46,7 @@ resource "aws_launch_configuration" "cluster" {
 */
 
 resource "aws_launch_template" "ecs" {
-  name                    = "ecs-${var.CLUSTER_NAME}-launchconfig"
+  name                    = "ecs-${var.CLUSTER_NAME}-${var.DEFAULT_TAGS["Environment"]}"
   instance_type           = var.INSTANCE_TYPE
   image_id                = data.aws_ami.ecs.id
   disable_api_termination = true
@@ -96,7 +96,7 @@ resource "aws_launch_template" "ecs" {
 
 // Autoscaling
 resource "aws_autoscaling_group" "cluster" {
-  name                = "ecs-${var.CLUSTER_NAME}-autoscaling"
+  name                = "ecs-${var.CLUSTER_NAME}-${var.DEFAULT_TAGS["Environment"]}"
   vpc_zone_identifier = split(",", var.VPC_SUBNETS)
   //launch_configuration = aws_launch_configuration.cluster.name
   termination_policies = split(",", var.ECS_TERMINATION_POLICIES)
