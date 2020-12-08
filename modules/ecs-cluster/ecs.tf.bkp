@@ -21,36 +21,29 @@ resource "aws_ecs_cluster" "cluster" {
   tags = var.DEFAULT_TAGS
 }
 
-# Render a part using a `template_file`
 data "template_file" "ecs_init" {
-  template = file("${path.module}/templates/ecs_init.tpl")
-  #template = "${file("${path.module}/templates/ecs_init.tpl")}"
-
+  template = filebase64("${path.module}/templates/ecs_init.tpl")
+  #template = file("${path.module}/templates/ecs_init.tpl")
   vars = {
     CLUSTER_NAME = var.CLUSTER_NAME
   }
 }
 
-# Render a multi-part cloudinit config making use of the part
-# above, and other source files
-data "template_cloudinit_config" "config" {
-  gzip          = false
-  base64_encode = true
-
-  part {
-    #order        = 1
-    #filename     = "init.sh"
-    content_type = "text/x-shellscript"
-
-    content = data.template_file.ecs_init.rendered
-  }
-
-  part {
-    # order        = 2
-    content_type = "text/x-shellscript"
-    content      = var.additional_user_data
+/*
+// launchconfig
+resource "aws_launch_configuration" "cluster" {
+  name_prefix          = "ecs-${var.CLUSTER_NAME}-launchconfig"
+  image_id             = data.aws_ami.ecs.id
+  instance_type        = var.INSTANCE_TYPE
+  key_name             = var.SSH_KEY_NAME
+  iam_instance_profile = aws_iam_instance_profile.cluster-ec2-role.id
+  security_groups      = [aws_security_group.cluster.id]
+  user_data            = data.template_file.ecs_init.rendered
+  lifecycle {
+    create_before_destroy = true
   }
 }
+*/
 
 resource "aws_launch_template" "ecs" {
   name                    = "ecs-${var.CLUSTER_NAME}-${var.DEFAULT_TAGS["Environment"]}"
@@ -60,10 +53,11 @@ resource "aws_launch_template" "ecs" {
   //security_group_names  = []
   key_name               = var.SSH_KEY_NAME
   update_default_version = true
-  user_data              = data.template_cloudinit_config.config.rendered
+  user_data              = data.template_file.ecs_init.rendered
+  #user_data = filebase64("${path.module}/ecs_init.tpl")
+  //user_data = data.template_file.ecs_init.rendered
   tags                   = var.DEFAULT_TAGS
   vpc_security_group_ids = [aws_security_group.cluster.id]
-
   iam_instance_profile {
     name = aws_iam_instance_profile.cluster-ec2-role.id
   }

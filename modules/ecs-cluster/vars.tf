@@ -95,3 +95,9 @@ variable "SCHEDULE_IN_NIGHT" {
   description = "Dimensionar o número de instâncias EC2 depois do horário comercial"
   type        = string
 }
+
+variable "additional_user_data" {
+  type        = string
+  description = "User data that will run at the end of the existing user data"
+  default     = ""
+}
