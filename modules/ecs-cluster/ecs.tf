@@ -111,7 +111,7 @@ resource "aws_autoscaling_group" "cluster" {
 
   tag {
     key                 = "Name"
-    value               = "${var.CLUSTER_NAME}-ecs"
+    value               = "${var.CLUSTER_NAME}-ecs-${var.DEFAULT_TAGS["Environment"]}"
     propagate_at_launch = true
   }
 }
