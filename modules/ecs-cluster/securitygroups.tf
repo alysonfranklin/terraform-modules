@@ -1,7 +1,8 @@
 resource "aws_security_group" "cluster" {
-  name        = var.CLUSTER_NAME
+  name        = "${var.CLUSTER_NAME}-ecs"
   vpc_id      = var.VPC_ID
-  description = var.CLUSTER_NAME
+  description = "${var.CLUSTER_NAME}-ecs"
+  tags        = var.DEFAULT_TAGS
 }
 
 resource "aws_security_group_rule" "cluster-allow-ssh" {

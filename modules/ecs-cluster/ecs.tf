@@ -22,12 +22,14 @@ resource "aws_ecs_cluster" "cluster" {
 }
 
 data "template_file" "ecs_init" {
-  template = file("${path.module}/templates/ecs_init.tpl")
+  template = filebase64("${path.module}/templates/ecs_init.tpl")
+  #template = file("${path.module}/templates/ecs_init.tpl")
   vars = {
     CLUSTER_NAME = var.CLUSTER_NAME
   }
 }
 
+/*
 // launchconfig
 resource "aws_launch_configuration" "cluster" {
   name_prefix          = "ecs-${var.CLUSTER_NAME}-launchconfig"
@@ -41,16 +43,71 @@ resource "aws_launch_configuration" "cluster" {
     create_before_destroy = true
   }
 }
+*/
+
+resource "aws_launch_template" "ecs" {
+  name = "ecs-${var.CLUSTER_NAME}-launchconfig"
+  instance_type        = var.INSTANCE_TYPE
+  image_id  = data.aws_ami.ecs.id
+  disable_api_termination = true
+  //security_group_names  = []
+  key_name             = var.SSH_KEY_NAME
+  update_default_version = true
+  user_data = data.template_file.ecs_init.rendered
+  #user_data = filebase64("${path.module}/ecs_init.tpl")
+  //user_data = data.template_file.ecs_init.rendered
+  tags = var.DEFAULT_TAGS
+  vpc_security_group_ids  = [aws_security_group.cluster.id]
+  iam_instance_profile {
+    name = aws_iam_instance_profile.cluster-ec2-role.id
+  }
+  
+  metadata_options {                                                                                                                                    
+  
+    http_endpoint               = "enabled"                                                                                                           
+    http_put_response_hop_limit = 1                                                                                                                   
+  }
+
+  monitoring {                                                                                                                                          
+    enabled = false                                                                                                                           
+  }
+
+  tag_specifications {
+    resource_type = "instance"
+    tags          = var.DEFAULT_TAGS
+  }
+
+  /*
+  tag_specifications {
+    resource_type = "elastic-gpu"
+    tags          = var.DEFAULT_TAGS
+  }
+
+  tag_specifications {
+    resource_type = "spot-instances-request"
+    tags          = var.DEFAULT_TAGS
+  }
+  */
+  
+  lifecycle {
+    create_before_destroy = true
+  }
+}
 
 // Autoscaling
 resource "aws_autoscaling_group" "cluster" {
   name                 = "ecs-${var.CLUSTER_NAME}-autoscaling"
   vpc_zone_identifier  = split(",", var.VPC_SUBNETS)
-  launch_configuration = aws_launch_configuration.cluster.name
+  //launch_configuration = aws_launch_configuration.cluster.name
   termination_policies = split(",", var.ECS_TERMINATION_POLICIES)
   min_size             = var.ECS_MINSIZE
   max_size             = var.ECS_MAXSIZE
   desired_capacity     = var.ECS_DESIRED_CAPACITY
+
+  launch_template {
+    id      = aws_launch_template.ecs.id
+    version = "$Latest"
+  }
 
   tag {
     key                 = "Name"
