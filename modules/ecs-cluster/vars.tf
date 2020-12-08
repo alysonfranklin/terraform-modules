@@ -16,6 +16,10 @@ variable "INSTANCE_TYPE" {
 variable "SSH_KEY_NAME" {
 }
 
+variable "VPN_IP" {
+  description = "IP da VPN que terá acesso a todas as portas das maquinas do cluster ecs"
+}
+
 variable "VPC_SUBNETS" {
 }
 
@@ -55,7 +59,7 @@ variable "ENABLE_ASG_SCHEDULE" {
 
 variable "SCHEDULE_OUT_BUSINESS_HOURS" {
   description = "Dimensionar o número de instâncias EC2 no horário comercial"
-  type = string
+  type        = string
 }
 
 variable "SCHEDULE_MIN_SIZE_COMMERCIAL" {
@@ -89,5 +93,5 @@ variable "SCHEDULE_DESIRED_CAPACITY_NIGHT" {
 }
 variable "SCHEDULE_IN_NIGHT" {
   description = "Dimensionar o número de instâncias EC2 depois do horário comercial"
-  type = string
+  type        = string
 }

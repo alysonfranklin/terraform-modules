@@ -46,30 +46,30 @@ resource "aws_launch_configuration" "cluster" {
 */
 
 resource "aws_launch_template" "ecs" {
-  name = "ecs-${var.CLUSTER_NAME}-launchconfig"
-  instance_type        = var.INSTANCE_TYPE
-  image_id  = data.aws_ami.ecs.id
+  name                    = "ecs-${var.CLUSTER_NAME}-launchconfig"
+  instance_type           = var.INSTANCE_TYPE
+  image_id                = data.aws_ami.ecs.id
   disable_api_termination = true
   //security_group_names  = []
-  key_name             = var.SSH_KEY_NAME
+  key_name               = var.SSH_KEY_NAME
   update_default_version = true
-  user_data = data.template_file.ecs_init.rendered
+  user_data              = data.template_file.ecs_init.rendered
   #user_data = filebase64("${path.module}/ecs_init.tpl")
   //user_data = data.template_file.ecs_init.rendered
-  tags = var.DEFAULT_TAGS
-  vpc_security_group_ids  = [aws_security_group.cluster.id]
+  tags                   = var.DEFAULT_TAGS
+  vpc_security_group_ids = [aws_security_group.cluster.id]
   iam_instance_profile {
     name = aws_iam_instance_profile.cluster-ec2-role.id
   }
-  
-  metadata_options {                                                                                                                                    
-  
-    http_endpoint               = "enabled"                                                                                                           
-    http_put_response_hop_limit = 1                                                                                                                   
+
+  metadata_options {
+
+    http_endpoint               = "enabled"
+    http_put_response_hop_limit = 1
   }
 
-  monitoring {                                                                                                                                          
-    enabled = false                                                                                                                           
+  monitoring {
+    enabled = false
   }
 
   tag_specifications {
@@ -88,7 +88,7 @@ resource "aws_launch_template" "ecs" {
     tags          = var.DEFAULT_TAGS
   }
   */
-  
+
   lifecycle {
     create_before_destroy = true
   }
@@ -96,8 +96,8 @@ resource "aws_launch_template" "ecs" {
 
 // Autoscaling
 resource "aws_autoscaling_group" "cluster" {
-  name                 = "ecs-${var.CLUSTER_NAME}-autoscaling"
-  vpc_zone_identifier  = split(",", var.VPC_SUBNETS)
+  name                = "ecs-${var.CLUSTER_NAME}-autoscaling"
+  vpc_zone_identifier = split(",", var.VPC_SUBNETS)
   //launch_configuration = aws_launch_configuration.cluster.name
   termination_policies = split(",", var.ECS_TERMINATION_POLICIES)
   min_size             = var.ECS_MINSIZE
