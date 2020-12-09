@@ -75,7 +75,7 @@ resource "aws_iam_instance_profile" "cluster-ec2-role" {
 }
 
 resource "aws_iam_role_policy" "cluster-ec2-role" {
-  name = "cluster-ec2-role-policy"
+  name = "ecs-${var.CLUSTER_NAME}-ec2-policy"
   role = aws_iam_role.cluster-ec2-role.id
 
   policy = <<EOF
