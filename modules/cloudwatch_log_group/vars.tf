@@ -9,7 +9,7 @@ variable "LOG_GROUP" {
   default = "" // Se o nome do log_group não for informado, será criado um log_group com nome aleatório
 }
 
-variable "CREATE-LOG_GROUP" {
+variable "CREATE_LOG_GROUP" {
   type = bool
   default = true
 }
