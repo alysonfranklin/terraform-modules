@@ -6,7 +6,7 @@ resource "aws_alb" "alb" {
   security_groups = [aws_security_group.alb.id]
   subnets         = split(",", var.VPC_SUBNETS)
 
-  enable_deletion_protection = true
+  enable_deletion_protection = var.ENABLE_DELETION_PROTECTION
   tags                       = var.DEFAULT_TAGS
 }
 

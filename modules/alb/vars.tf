@@ -24,3 +24,9 @@ variable "DEFAULT_TAGS" {
   type    = map
   default = {}
 }
+
+variable "ENABLE_DELETION_PROTECTION" {
+  description = "Ativa proteção contra exclusão do ALB"
+  type = bool
+  default = true
+}
