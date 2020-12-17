@@ -350,17 +350,17 @@ output "vpc_endpoint_dynamodb_pl_id" {
 
 output "vpc_endpoint_sqs_id" {
   description = "O ID do VPC Endpoint do SQS"
-  value       = "${element(concat(aws_vpc_endpoint.sqs.*.id, list("")), 0)}"
+  value       = element(concat(aws_vpc_endpoint.sqs.*.id, list("")), 0)
 }
 
 output "vpc_endpoint_sqs_network_interface_ids" {
   description = "Uma ou mais interfaces de rede para o VPC Endpoint do SQS."
-  value       = "${flatten(aws_vpc_endpoint.sqs.*.network_interface_ids)}"
+  value       = flatten(aws_vpc_endpoint.sqs.*.network_interface_ids)
 }
 
 output "vpc_endpoint_sqs_dns_entry" {
   description = "As entradas DNS para o VPC Endpoint do SQS"
-  value       = "${flatten(aws_vpc_endpoint.sqs.*.dns_entry)}"
+  value       = flatten(aws_vpc_endpoint.sqs.*.dns_entry)
 }
 
 output "vpc_endpoint_ssm_id" {
@@ -485,47 +485,47 @@ output "vpc_endpoint_apigw_dns_entry" {
 
 output "vpc_endpoint_ecs_id" {
   description = "O ID do VPC Endpoint para ECS"
-  value       = "${element(concat(aws_vpc_endpoint.ecs.*.id, list("")), 0)}"
+  value       = element(concat(aws_vpc_endpoint.ecs.*.id, list("")), 0)
 }
 
 output "vpc_endpoint_ecs_network_interface_ids" {
   description = "Uma ou mais interfaces de rede do VPC Endpoint para ECS."
-  value       = "${flatten(aws_vpc_endpoint.ecs.*.network_interface_ids)}"
+  value       = flatten(aws_vpc_endpoint.ecs.*.network_interface_ids)
 }
 
 output "vpc_endpoint_ecs_dns_entry" {
   description = "As entradas DNS do VPC Endpoint para ECS."
-  value       = "${flatten(aws_vpc_endpoint.ecs.*.dns_entry)}"
+  value       = flatten(aws_vpc_endpoint.ecs.*.dns_entry)
 }
 
 output "vpc_endpoint_ecs_agent_id" {
   description = "O ID do VPC endpoint para ECS Agent"
-  value       = "${element(concat(aws_vpc_endpoint.ecs_agent.*.id, list("")), 0)}"
+  value       = element(concat(aws_vpc_endpoint.ecs_agent.*.id, list("")), 0)
 }
 
 output "vpc_endpoint_ecs_agent_network_interface_ids" {
   description = "Uma ou mais interfaces de rede do VPC Endpoint para ECS Agent."
-  value       = "${flatten(aws_vpc_endpoint.ecs_agent.*.network_interface_ids)}"
+  value       = flatten(aws_vpc_endpoint.ecs_agent.*.network_interface_ids)
 }
 
 output "vpc_endpoint_ecs_agent_dns_entry" {
   description = "As entradas DNS do VPC Endpoint para ECS Agent."
-  value       = "${flatten(aws_vpc_endpoint.ecs_agent.*.dns_entry)}"
+  value       = flatten(aws_vpc_endpoint.ecs_agent.*.dns_entry)
 }
 
 output "vpc_endpoint_ecs_telemetry_id" {
   description = "O ID do VPC Endpoint para ECS Telemetry"
-  value       = "${element(concat(aws_vpc_endpoint.ecs_telemetry.*.id, list("")), 0)}"
+  value       = element(concat(aws_vpc_endpoint.ecs_telemetry.*.id, list("")), 0)
 }
 
 output "vpc_endpoint_ecs_telemetry_network_interface_ids" {
   description = "Uma ou mais interfaces de rede do VPC Endpoint para ECS Telemetry."
-  value       = "${flatten(aws_vpc_endpoint.ecs_telemetry.*.network_interface_ids)}"
+  value       = flatten(aws_vpc_endpoint.ecs_telemetry.*.network_interface_ids)
 }
 
 output "vpc_endpoint_ecs_telemetry_dns_entry" {
   description = "As entradas DNS do VPC Endpoint para ECS Telemetry."
-  value       = "${flatten(aws_vpc_endpoint.ecs_telemetry.*.dns_entry)}"
+  value       = flatten(aws_vpc_endpoint.ecs_telemetry.*.dns_entry)
 }
 
 output "vpc_endpoint_sns_id" {
