@@ -1,6 +1,6 @@
 // ECS service role
 resource "aws_iam_role" "cluster-service-role" {
-  name = "ecs-service-role-${var.CLUSTER_NAME}"
+  name = "ecs-service-role-${var.CLUSTER_NAME}-${var.DEFAULT_TAGS["Environment"]}"
 
   assume_role_policy = <<EOF
 {
@@ -49,7 +49,7 @@ EOF
 
 // IAM EC2 role
 resource "aws_iam_role" "cluster-ec2-role" {
-  name = "ecs-${var.CLUSTER_NAME}-ec2-role"
+  name = "ecs-${var.CLUSTER_NAME}-ec2-role-${var.DEFAULT_TAGS["Environment"]}"
 
   assume_role_policy = <<EOF
 {
@@ -70,7 +70,7 @@ EOF
 }
 
 resource "aws_iam_instance_profile" "cluster-ec2-role" {
-  name = "ecs-${var.CLUSTER_NAME}-ec2-role"
+  name = "ecs-${var.CLUSTER_NAME}-ec2-role-${var.DEFAULT_TAGS["Environment"]}"
   role = aws_iam_role.cluster-ec2-role.name
 }
 
