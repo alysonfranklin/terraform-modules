@@ -17,7 +17,7 @@ data "aws_ami" "ecs" {
 
 // ECS cluster
 resource "aws_ecs_cluster" "cluster" {
-  name = var.CLUSTER_NAME
+  name = "${var.CLUSTER_NAME}-${var.DEFAULT_TAGS["Environment"]}"
   tags = var.DEFAULT_TAGS
 }
 
