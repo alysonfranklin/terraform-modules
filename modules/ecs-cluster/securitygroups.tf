@@ -1,5 +1,5 @@
 resource "aws_security_group" "cluster" {
-  name        = "${var.CLUSTER_NAME}-ecs-${var.DEFAULT_TAGS["Environment"]}"
+  name        = "${var.CLUSTER_NAME}-ecs"
   vpc_id      = var.VPC_ID
   description = "${var.CLUSTER_NAME}-ecs-${var.DEFAULT_TAGS["Environment"]}"
   tags        = var.DEFAULT_TAGS

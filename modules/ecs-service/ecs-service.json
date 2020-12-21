@@ -1,7 +1,7 @@
 [
   {
     "name": "${APPLICATION_NAME}",
-    "image": "${APPLICATION_NAME}/${APPLICATION_NAME}",
+    "image": "${APPLICATION_NAME}/${APPLICATION_NAME}:latest",
     "cpu": ${CPU_RESERVATION},
     "memoryReservation": ${MEMORY_RESERVATION},
     "essential": true,
@@ -16,8 +16,7 @@
           "logDriver": "awslogs",
           "options": {
               "awslogs-group": "${LOG_GROUP}",
-              "awslogs-region": "${AWS_REGION}",
-              "awslogs-stream-prefix": "${APPLICATION_NAME}"
+              "awslogs-region": "${AWS_REGION}"
           }
     }
   }
