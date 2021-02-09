@@ -17,8 +17,15 @@ data "aws_ami" "ecs" {
 
 // ECS cluster
 resource "aws_ecs_cluster" "cluster" {
-  name = var.CLUSTER_NAME
-  tags = var.DEFAULT_TAGS
+  name               = var.CLUSTER_NAME
+  tags               = var.DEFAULT_TAGS
+  capacity_providers = var.ENABLE_CAPACITY_PROVIDER == true ? aws_ecs_capacity_provider.ecs[*].name : []
+  //default_capacity_provider_strategy = var.ENABLE_CAPACITY_PROVIDER == true ? aws_ecs_capacity_provider.ecs[*].name : []
+
+  setting {
+    name  = "containerInsights"
+    value = "enabled"
+  }
 }
 
 # Render a part using a `template_file`
@@ -102,8 +109,8 @@ resource "aws_launch_template" "ecs" {
 
 // Autoscaling
 resource "aws_autoscaling_group" "cluster" {
-  name                = "ecs-${var.CLUSTER_NAME}-${var.DEFAULT_TAGS["Environment"]}"
-  vpc_zone_identifier = split(",", var.VPC_SUBNETS)
+  name                 = "ecs-${var.CLUSTER_NAME}-${var.DEFAULT_TAGS["Environment"]}"
+  vpc_zone_identifier  = split(",", var.VPC_SUBNETS)
   termination_policies = split(",", var.ECS_TERMINATION_POLICIES)
   min_size             = var.ECS_MINSIZE
   max_size             = var.ECS_MAXSIZE
@@ -139,4 +146,44 @@ resource "aws_autoscaling_schedule" "scale_in_at_night" {
   desired_capacity       = var.SCHEDULE_DESIRED_CAPACITY_NIGHT
   recurrence             = var.SCHEDULE_IN_NIGHT
   autoscaling_group_name = aws_autoscaling_group.cluster.name
+}
+
+// Capacity Provider
+resource "aws_ecs_capacity_provider" "ecs" {
+  count      = var.ENABLE_CAPACITY_PROVIDER ? 1 : 0
+  name       = "capacity_provider-ecs-${var.CLUSTER_NAME}-${var.DEFAULT_TAGS["Environment"]}"
+  depends_on = [aws_autoscaling_group.ecs]
+
+  auto_scaling_group_provider {
+    auto_scaling_group_arn         = aws_autoscaling_group.ecs[0].arn
+    managed_termination_protection = "DISABLED"
+
+    managed_scaling {
+      //maximum_scaling_step_size = 1000
+      //minimum_scaling_step_size = 1
+      status          = "ENABLED"
+      target_capacity = 100
+    }
+  }
+}
+
+resource "aws_autoscaling_group" "ecs" {
+  count                = var.ENABLE_CAPACITY_PROVIDER ? 1 : 0
+  name                 = "capacity_provider-ecs-${var.CLUSTER_NAME}-${var.DEFAULT_TAGS["Environment"]}"
+  vpc_zone_identifier  = split(",", var.VPC_SUBNETS)
+  termination_policies = split(",", var.ECS_TERMINATION_POLICIES)
+  min_size             = var.ECS_MINSIZE
+  max_size             = var.ECS_MAXSIZE
+  desired_capacity     = var.ECS_DESIRED_CAPACITY
+
+  launch_template {
+    id      = aws_launch_template.ecs.id
+    version = "$Latest"
+  }
+
+  tag {
+    key                 = "Name"
+    value               = "${var.CLUSTER_NAME}-ecs-${var.DEFAULT_TAGS["Environment"]}"
+    propagate_at_launch = true
+  }
 }

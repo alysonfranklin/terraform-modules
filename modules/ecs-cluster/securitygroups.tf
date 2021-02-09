@@ -37,13 +37,13 @@ resource "aws_security_group_rule" "cluster-egress" {
 }
 
 resource "aws_security_group_rule" "cluster-ecs" {
-  security_group_id = aws_security_group.cluster.id
-  type              = "ingress"
-  from_port         = 0
-  to_port           = 0
-  protocol          = "-1"
+  security_group_id        = aws_security_group.cluster.id
+  type                     = "ingress"
+  from_port                = 0
+  to_port                  = 0
+  protocol                 = "-1"
   source_security_group_id = aws_security_group.cluster.id
-  description = "${var.CLUSTER_NAME}-ecs"
+  description              = "${var.CLUSTER_NAME}-ecs"
 }
 
 resource "aws_security_group_rule" "vpn" {
@@ -54,5 +54,5 @@ resource "aws_security_group_rule" "vpn" {
   protocol          = "-1"
   //cidr_blocks       = [var.VPN_IP]
   description = "VPN"
-  cidr_blocks =  [var.VPN_IP != "" ? var.VPN_IP : "0.0.0.0/0"] // Se var.VPN_IP for uma string vazia, o resultado é "0.0.0.0/0", mas caso contrário, é o valor real de var.VPN_IP
+  cidr_blocks = [var.VPN_IP != "" ? var.VPN_IP : "0.0.0.0/0"] // Se var.VPN_IP for uma string vazia, o resultado é "0.0.0.0/0", mas caso contrário, é o valor real de var.VPN_IP
 }

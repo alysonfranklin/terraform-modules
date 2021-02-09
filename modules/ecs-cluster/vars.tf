@@ -57,6 +57,11 @@ variable "ENABLE_ASG_SCHEDULE" {
   type        = bool
 }
 
+variable "ENABLE_CAPACITY_PROVIDER" {
+  description = "Se definido como true, cria o capacity provider para o ECS"
+  type        = bool
+}
+
 variable "SCHEDULE_OUT_BUSINESS_HOURS" {
   description = "Dimensionar o número de instâncias EC2 no horário comercial"
   type        = string
