@@ -39,6 +39,24 @@ variable "ECS_DESIRED_CAPACITY" {
   default = 1
 }
 
+variable "CP_ECS_MINSIZE" {
+  type = number
+  description = "Número mínimo de instâncias do Capacity Provider"
+  default = 1
+}
+
+variable "CP_ECS_MAXSIZE" {
+  type = number
+  description = "Número máximo de instâncias do Capacity Provider"
+  default = 2
+}
+
+variable "CP_ECS_DESIRED_CAPACITY" {
+  type = number
+  description = "Número desejado de instâncias do Capacity Provider"
+  default = 1
+}
+
 variable "ENABLE_SSH" {
   default = false
 }
@@ -105,4 +123,10 @@ variable "additional_user_data" {
   type        = string
   description = "User data that will run at the end of the existing user data"
   default     = ""
+}
+
+variable "CONTAINER_INSIGHTS" {
+  type        = bool
+  description = "Habilita container_insights no cluster ECS"
+  default     = false
 }

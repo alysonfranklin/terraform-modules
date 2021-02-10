@@ -24,7 +24,7 @@ resource "aws_ecs_cluster" "cluster" {
 
   setting {
     name  = "containerInsights"
-    value = "enabled"
+    value = var.CONTAINER_INSIGHTS ? "enabled" : "disabled"
   }
 }
 
@@ -172,9 +172,9 @@ resource "aws_autoscaling_group" "ecs" {
   name                 = "capacity_provider-ecs-${var.CLUSTER_NAME}-${var.DEFAULT_TAGS["Environment"]}"
   vpc_zone_identifier  = split(",", var.VPC_SUBNETS)
   termination_policies = split(",", var.ECS_TERMINATION_POLICIES)
-  min_size             = var.ECS_MINSIZE
-  max_size             = var.ECS_MAXSIZE
-  desired_capacity     = var.ECS_DESIRED_CAPACITY
+  min_size             = var.CP_ECS_MINSIZE
+  max_size             = var.CP_ECS_MAXSIZE
+  desired_capacity     = var.CP_ECS_DESIRED_CAPACITY
 
   launch_template {
     id      = aws_launch_template.ecs.id
