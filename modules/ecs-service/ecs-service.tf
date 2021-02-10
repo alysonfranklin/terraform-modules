@@ -50,6 +50,16 @@ resource "aws_ecs_service" "ecs-service" {
   deployment_minimum_healthy_percent = var.DEPLOYMENT_MINIMUM_HEALTHY_PERCENT
   deployment_maximum_percent         = var.DEPLOYMENT_MAXIMUM_PERCENT
 
+  ordered_placement_strategy {
+    type  = "binpack"
+    field = "cpu"
+  }
+
+  ordered_placement_strategy {
+    type  = "binpack"
+    field = "memory"
+  }
+
   load_balancer {
     target_group_arn = aws_alb_target_group.ecs-service.id
     container_name   = var.APPLICATION_NAME
