@@ -130,3 +130,16 @@ variable "CONTAINER_INSIGHTS" {
   description = "Habilita container_insights no cluster ECS"
   default     = false
 }
+
+variable "CAPACITY_PROVIDERS" {
+  description = "Lista de nomes curtos de um ou mais provedores de capacidade para associar ao cluster. Os valores válidos também incluem FARGATE e FARGATE_ SPOT."
+  type        = list(string)
+  default     = []
+}
+
+variable "DEFAULT_CAPACITY_PROVIDER_STRATEGY" {
+  description = "A estratégia do provedor de capacidade a ser usada por padrão para o cluster. Pode ser um ou mais."
+  type        = list(map(any))
+  default     = []
+}
+

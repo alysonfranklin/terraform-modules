@@ -20,7 +20,18 @@ resource "aws_ecs_cluster" "cluster" {
   name               = var.CLUSTER_NAME
   tags               = var.DEFAULT_TAGS
   capacity_providers = var.ENABLE_CAPACITY_PROVIDER == true ? aws_ecs_capacity_provider.ecs[*].name : []
-  //default_capacity_provider_strategy = var.ENABLE_CAPACITY_PROVIDER == true ? aws_ecs_capacity_provider.ecs[*].name : []
+
+  dynamic "default_capacity_provider_strategy" {
+    for_each = var.DEFAULT_CAPACITY_PROVIDER_STRATEGY
+    iterator = strategy
+
+    content {
+      capacity_provider = strategy.value["capacity_provider"]
+      weight            = lookup(strategy.value, "weight", null)
+      base              = lookup(strategy.value, "base", null)
+    }
+  }
+
 
   setting {
     name  = "containerInsights"
