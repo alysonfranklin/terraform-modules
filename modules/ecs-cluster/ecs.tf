@@ -1,18 +1,17 @@
 // ECS ami
 data "aws_ami" "ecs" {
   most_recent = true
+  owners = ["amazon"]
 
   filter {
     name   = "name"
-    values = ["amzn-ami-*-amazon-ecs-optimized"]
+    values = ["amzn2-ami-ecs-hvm*"]
   }
 
   filter {
     name   = "virtualization-type"
     values = ["hvm"]
   }
-
-  owners = ["591542846629"] // AWS
 }
 
 // ECS cluster
@@ -31,7 +30,6 @@ resource "aws_ecs_cluster" "cluster" {
       base              = lookup(strategy.value, "base", null)
     }
   }
-
 
   setting {
     name  = "containerInsights"
