@@ -78,17 +78,17 @@ variable "ALB_ARN" {
 }
 
 variable "ENABLE_STICKINESS" {
-  type        = bool
-  default     = false
+  type    = bool
+  default = false
 }
 
 variable "CREATE_ECR" {
   description = "Cria repositório ECR ou não?"
-  type = bool
-  default = true
+  type        = bool
+  default     = true
 }
 
 variable "DEFAULT_TAGS" {
-  type = map
+  type    = map
   default = {}
 }
