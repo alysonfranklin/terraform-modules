@@ -50,6 +50,11 @@ resource "aws_ecs_service" "ecs-service" {
   deployment_minimum_healthy_percent = var.DEPLOYMENT_MINIMUM_HEALTHY_PERCENT
   deployment_maximum_percent         = var.DEPLOYMENT_MAXIMUM_PERCENT
 
+  capacity_provider_strategy {
+    capacity_provider = "capacity_provider-ecs-${var.CLUSTER_NAME}-${var.DEFAULT_TAGS["Environment"]}"
+    weight = 1
+  }
+
   ordered_placement_strategy {
     type  = "binpack"
     field = "cpu"

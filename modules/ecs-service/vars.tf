@@ -16,6 +16,9 @@ variable "APPLICATION_VERSION" {
 variable "CLUSTER_ARN" {
 }
 
+variable "CLUSTER_NAME" {
+}
+
 variable "SERVICE_ROLE_ARN" {
 }
 
