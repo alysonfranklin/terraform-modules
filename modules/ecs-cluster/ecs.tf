@@ -1,7 +1,7 @@
 // ECS ami
 data "aws_ami" "ecs" {
   most_recent = true
-  owners = ["amazon"]
+  owners      = ["amazon"]
 
   filter {
     name   = "name"

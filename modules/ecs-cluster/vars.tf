@@ -40,21 +40,21 @@ variable "ECS_DESIRED_CAPACITY" {
 }
 
 variable "CP_ECS_MINSIZE" {
-  type = number
+  type        = number
   description = "Número mínimo de instâncias do Capacity Provider"
-  default = 1
+  default     = 1
 }
 
 variable "CP_ECS_MAXSIZE" {
-  type = number
+  type        = number
   description = "Número máximo de instâncias do Capacity Provider"
-  default = 2
+  default     = 2
 }
 
 variable "CP_ECS_DESIRED_CAPACITY" {
-  type = number
+  type        = number
   description = "Número desejado de instâncias do Capacity Provider"
-  default = 1
+  default     = 1
 }
 
 variable "ENABLE_SSH" {
