@@ -138,22 +138,22 @@ resource "aws_autoscaling_group" "cluster" {
 }
 
 // Schedule Autoscaling Group
-resource "aws_autoscaling_schedule" "scale_out_business_hours" {
+resource "aws_autoscaling_schedule" "TURNON" {
   count                  = var.ENABLE_ASG_SCHEDULE ? 1 : 0
-  scheduled_action_name  = "scale-out-during-business-hours"
-  min_size               = var.SCHEDULE_MIN_SIZE_COMMERCIAL
-  max_size               = var.SCHEDULE_MAX_SIZE_COMMERCIAL
-  desired_capacity       = var.SCHEDULE_DESIRED_CAPACITY_COMMERCIAL
+  scheduled_action_name  = "TurnOn"
+  min_size               = var.SCHEDULE_MIN_SIZE_TURNON
+  max_size               = var.SCHEDULE_MAX_SIZE_TURNON
+  desired_capacity       = var.SCHEDULE_DESIRED_CAPACITY_TURNON
   recurrence             = var.SCHEDULE_OUT_BUSINESS_HOURS
   autoscaling_group_name = aws_autoscaling_group.cluster.name
 }
-resource "aws_autoscaling_schedule" "scale_in_at_night" {
+resource "aws_autoscaling_schedule" "TURNOFF" {
   count                  = var.ENABLE_ASG_SCHEDULE ? 1 : 0
-  scheduled_action_name  = "scale-in-at-night"
-  min_size               = var.SCHEDULE_MIN_SIZE_NIGHT
-  max_size               = var.SCHEDULE_MAX_SIZE_NIGHT
-  desired_capacity       = var.SCHEDULE_DESIRED_CAPACITY_NIGHT
-  recurrence             = var.SCHEDULE_IN_NIGHT
+  scheduled_action_name  = "TurnOff"
+  min_size               = var.SCHEDULE_MIN_SIZE_TURNOFF
+  max_size               = var.SCHEDULE_MAX_SIZE_TURNOFF
+  desired_capacity       = var.SCHEDULE_DESIRED_CAPACITY_TURNOFF
+  recurrence             = var.SCHEDULE_IN_TURNOFF
   autoscaling_group_name = aws_autoscaling_group.cluster.name
 }
 

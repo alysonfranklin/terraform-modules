@@ -85,36 +85,36 @@ variable "SCHEDULE_OUT_BUSINESS_HOURS" {
   type        = string
 }
 
-variable "SCHEDULE_MIN_SIZE_COMMERCIAL" {
+variable "SCHEDULE_MIN_SIZE_TURNON" {
   description = "O número mínimo de instâncias EC2 no schedule do ASG - Horário comercial"
   type        = number
 }
 
-variable "SCHEDULE_MAX_SIZE_COMMERCIAL" {
+variable "SCHEDULE_MAX_SIZE_TURNON" {
   description = "O número máximo de instâncias EC2 no schedule do ASG - Horário comercial"
   type        = number
 }
 
-variable "SCHEDULE_DESIRED_CAPACITY_COMMERCIAL" {
+variable "SCHEDULE_DESIRED_CAPACITY_TURNON" {
   description = "O número desejado de instâncias EC2 no schedule do ASG - Horário comercial"
   type        = number
 }
 
-variable "SCHEDULE_MIN_SIZE_NIGHT" {
+variable "SCHEDULE_MIN_SIZE_TURNOFF" {
   description = "O número mínimo de instâncias EC2 no schedule do ASG - Depois do horário comercial"
   type        = number
 }
 
-variable "SCHEDULE_MAX_SIZE_NIGHT" {
+variable "SCHEDULE_MAX_SIZE_TURNOFF" {
   description = "O número máximo de instâncias EC2 no schedule do ASG - Depois do horário comercial"
   type        = number
 }
 
-variable "SCHEDULE_DESIRED_CAPACITY_NIGHT" {
+variable "SCHEDULE_DESIRED_CAPACITY_TURNOFF" {
   description = "O número desejado de instâncias EC2 no schedule do ASG - Depois do horário comercial"
   type        = number
 }
-variable "SCHEDULE_IN_NIGHT" {
+variable "SCHEDULE_IN_TURNOFF" {
   description = "Dimensionar o número de instâncias EC2 depois do horário comercial"
   type        = string
 }
