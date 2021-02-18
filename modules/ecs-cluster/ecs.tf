@@ -9,8 +9,8 @@ data "aws_ami" "ecs" {
   }
 
   filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
+    name   = "architecture"
+    values = ["x86_64"]
   }
 }
 
