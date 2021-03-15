@@ -1,10 +1,3 @@
-// ECR 
-
-resource "aws_ecr_repository" "ecs-service" {
-  count = var.CREATE_ECR ? 1 : 0
-  name = var.APPLICATION_NAME
-}
-
 // Obtenha a revisão ativa mais recente
 data "aws_ecs_task_definition" "ecs-service" {
   task_definition = aws_ecs_task_definition.ecs-service-taskdef.family
