@@ -82,12 +82,6 @@ variable "ENABLE_STICKINESS" {
   default = false
 }
 
-variable "CREATE_ECR" {
-  description = "Cria repositório ECR ou não?"
-  type        = bool
-  default     = true
-}
-
 variable "DEFAULT_TAGS" {
   type    = map
   default = {}
