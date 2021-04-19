@@ -8,3 +8,14 @@ variable "CREATE_ECR" {
   type        = bool
   default     = true
 }
+
+variable "SCAN_ON_PUSH" {
+  description = "Indica se as imagens são escaneadas após serem enviadas para o repositório ECR"
+  type        = bool
+  default     = true
+}
+
+variable "DEFAULT_TAGS" {
+  type    = map
+  default = {}
+}
