@@ -19,6 +19,10 @@ resource "aws_alb_target_group" "ecs-service" {
   load_balancing_algorithm_type = var.LOAD_BALANCING_ALGORITHM_TYPE
   tags                          = var.DEFAULT_TAGS
 
+   lifecycle {
+    create_before_destroy = true
+  }
+
   health_check {
     healthy_threshold   = var.HEALTHY_THRESHOLD
     unhealthy_threshold = var.UNHEALTHY_THRESHOLD
