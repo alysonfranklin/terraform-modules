@@ -32,8 +32,8 @@ resource "aws_ecs_task_definition" "ecs-service-taskdef" {
 // ECS Service
 
 resource "aws_ecs_service" "ecs-service" {
-  name                    = var.APPLICATION_NAME
-  cluster                 = var.CLUSTER_ARN
+  name    = var.APPLICATION_NAME
+  cluster = var.CLUSTER_ARN
   task_definition = "${aws_ecs_task_definition.ecs-service-taskdef.family}:${max(
     aws_ecs_task_definition.ecs-service-taskdef.revision,
     data.aws_ecs_task_definition.ecs-service.revision,
@@ -48,14 +48,13 @@ resource "aws_ecs_service" "ecs-service" {
     weight            = 1
   }
 
-  ordered_placement_strategy {
-    type  = "binpack"
-    field = "cpu"
+  placement_constraints {
+    type = "distinctInstance"
   }
 
-  ordered_placement_strategy {
-    type  = "binpack"
-    field = "memory"
+  deployment_circuit_breaker {
+    enable   = true
+    rollback = true
   }
 
   load_balancer {

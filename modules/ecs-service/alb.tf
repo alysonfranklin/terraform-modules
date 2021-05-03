@@ -19,7 +19,7 @@ resource "aws_alb_target_group" "ecs-service" {
   load_balancing_algorithm_type = var.LOAD_BALANCING_ALGORITHM_TYPE
   tags                          = var.DEFAULT_TAGS
 
-   lifecycle {
+  lifecycle {
     create_before_destroy = true
   }
 
