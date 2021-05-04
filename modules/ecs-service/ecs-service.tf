@@ -48,8 +48,14 @@ resource "aws_ecs_service" "ecs-service" {
     weight            = 1
   }
 
-  placement_constraints {
-    type = "distinctInstance"
+  ordered_placement_strategy {
+    field = "attribute:ecs.availability-zone"
+    type  = "spread"
+  }
+
+  ordered_placement_strategy {
+    field = "instanceId"
+    type  = "spread"
   }
 
   deployment_circuit_breaker {
