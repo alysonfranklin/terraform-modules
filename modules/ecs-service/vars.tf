@@ -86,3 +86,19 @@ variable "DEFAULT_TAGS" {
   type    = map
   default = {}
 }
+
+variable "capacity_provider_strategies" {
+  type = list(object({
+    capacity_provider = string
+    weight            = number
+    base              = number
+  }))
+  description = "The capacity provider strategies to use for the service. See `capacity_provider_strategy` configuration block: https://www.terraform.io/docs/providers/aws/r/ecs_service.html#capacity_provider_strategy"
+  default     = []
+}
+
+variable "launch_type" {
+  type        = string
+  description = "The launch type on which to run your service. Valid values are `EC2` and `FARGATE`"
+  default     = "EC2"
+}

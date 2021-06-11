@@ -32,8 +32,9 @@ resource "aws_ecs_task_definition" "ecs-service-taskdef" {
 // ECS Service
 
 resource "aws_ecs_service" "ecs-service" {
-  name    = var.APPLICATION_NAME
-  cluster = var.CLUSTER_ARN
+  name        = var.APPLICATION_NAME
+  cluster     = var.CLUSTER_ARN
+  launch_type = length(var.capacity_provider_strategies) > 0 ? null : var.launch_type
   task_definition = "${aws_ecs_task_definition.ecs-service-taskdef.family}:${max(
     aws_ecs_task_definition.ecs-service-taskdef.revision,
     data.aws_ecs_task_definition.ecs-service.revision,
@@ -43,9 +44,13 @@ resource "aws_ecs_service" "ecs-service" {
   deployment_minimum_healthy_percent = var.DEPLOYMENT_MINIMUM_HEALTHY_PERCENT
   deployment_maximum_percent         = var.DEPLOYMENT_MAXIMUM_PERCENT
 
-  capacity_provider_strategy {
-    capacity_provider = "capacity_provider-ecs-${var.CLUSTER_NAME}-${var.DEFAULT_TAGS["Environment"]}"
-    weight            = 1
+  dynamic "capacity_provider_strategy" {
+    for_each = var.capacity_provider_strategies
+    content {
+      capacity_provider = capacity_provider_strategy.value.capacity_provider
+      weight            = capacity_provider_strategy.value.weight
+      base              = lookup(capacity_provider_strategy.value, "base", null)
+    }
   }
 
   ordered_placement_strategy {
