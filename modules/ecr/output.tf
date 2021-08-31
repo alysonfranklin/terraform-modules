@@ -1,3 +1,3 @@
 output "arn" {
-  value = aws_ecr_repository.ecr_service.arn
+  value = aws_ecr_repository.ecs-service.arn
 }
