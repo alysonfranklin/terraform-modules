@@ -1,6 +1,6 @@
 
 <!-- markdownlint-disable -->
-# terraform-aws-eks-cluster [![Latest Release](https://img.shields.io/github/release/cloudposse/terraform-aws-eks-cluster.svg)](https://github.com/cloudposse/terraform-aws-eks-cluster/releases/latest)
+# terraform-aws-eks-cluster - Release: 0.41.0
 <!-- markdownlint-restore -->
 
 
