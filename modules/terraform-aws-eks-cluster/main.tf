@@ -62,10 +62,6 @@ resource "aws_eks_cluster" "default" {
     }
   }
 
-  kubernetes_network_config {
-    service_ipv4_cidr = "192.168.0.0/16"
-  }
-
   vpc_config {
     security_group_ids      = compact(concat(module.security_group.*.id, var.security_groups))
     subnet_ids              = var.subnet_ids
