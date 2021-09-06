@@ -8,10 +8,7 @@
 
 The module provisions the following resources:
 
-- EKS cluster of master nodes that can be used together with the [terraform-aws-eks-workers](https://github.com/cloudposse/terraform-aws-eks-workers),
-  [terraform-aws-eks-node-group](https://github.com/cloudposse/terraform-aws-eks-node-group) and
-  [terraform-aws-eks-fargate-profile](https://github.com/cloudposse/terraform-aws-eks-fargate-profile)
-  modules to create a full-blown cluster
+- EKS cluster of master nodes that can be used together with the [terraform-aws-eks-node-group](https://github.com/cloudposse/terraform-aws-eks-node-group) modules to create a full-blown cluster
 - IAM Role to allow the cluster to access other AWS services
 - Security Group which is used by EKS workers to connect to the cluster and kubelets and pods to receive communication from the cluster control plane
 - The module creates and automatically applies an authentication ConfigMap to allow the workers nodes to join the cluster and to add additional users/roles/accounts
