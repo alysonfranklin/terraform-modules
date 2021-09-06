@@ -56,126 +56,82 @@ Other examples:
     region = var.region
   }
 
-  module "label" {
-    source = "cloudposse/label/null"
-    # Cloud Posse recommends pinning every module to a specific version
-    # version     = "x.x.x"
-    namespace  = var.namespace
-    name       = var.name
-    stage      = var.stage
-    delimiter  = var.delimiter
-    attributes = compact(concat(var.attributes, list("cluster")))
-    tags       = var.tags
-  }
+module "label" {
+  source    = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.24.1"
+  namespace = "eks"
+  name      = "solfacil"
+  stage     = "stg"
+  delimiter = "-"
+  #attributes = ""
+  #tags       = var.tags
+}
 
-  locals {
-    # The usage of the specific kubernetes.io/cluster/* resource tags below are required
-    # for EKS and Kubernetes to discover and manage networking resources
-    # https://www.terraform.io/docs/providers/aws/guides/eks-getting-started.html#base-vpc-networking
-    tags = merge(var.tags, map("kubernetes.io/cluster/${module.label.id}", "shared"))
+locals {
+  tags = merge(var.tags, map("kubernetes.io/cluster/${module.label.id}", "shared"))
 
-    # Unfortunately, most_recent (https://github.com/cloudposse/terraform-aws-eks-workers/blob/34a43c25624a6efb3ba5d2770a601d7cb3c0d391/main.tf#L141)
-    # variable does not work as expected, if you are not going to use custom AMI you should
-    # enforce usage of eks_worker_ami_name_filter variable to set the right kubernetes version for EKS workers,
-    # otherwise the first version of Kubernetes supported by AWS (v1.11) for EKS workers will be used, but
-    # EKS control plane will use the version specified by kubernetes_version variable.
-    eks_worker_ami_name_filter = "amazon-eks-node-${var.kubernetes_version}*"
-  }
+  eks_worker_ami_name_filter = "amazon-eks-node-${var.kubernetes_version}*"
+}
 
-  module "vpc" {
-    source = "cloudposse/vpc/aws"
-    # Cloud Posse recommends pinning every module to a specific version
-    # version     = "x.x.x"
-    namespace  = var.namespace
-    stage      = var.stage
-    name       = var.name
-    attributes = var.attributes
-    cidr_block = "172.16.0.0/16"
-    tags       = local.tags
-  }
+module "eks_cluster" {
+  source                    = "git::https://github.com/cloudposse/terraform-aws-eks-cluster.git?ref=tags/0.41.0"
+  namespace                 = "solfacil"
+  stage                     = "stg"
+  name                      = "eks"
+  label_order               = ["name", "namespace", "stage", "attributes"]
+  tags                      = var.tags
+  vpc_id                    = var.vpc_id
+  subnet_ids                = var.subnet_ids
+  region                    = var.region
+  enabled_cluster_log_types = var.enabled_cluster_log_types
+  public_access_cidrs       = var.public_access_cidrs
+  endpoint_private_access   = var.endpoint_private_access
+  endpoint_public_access    = var.endpoint_public_access
 
-  module "subnets" {
-    source = "cloudposse/dynamic-subnets/aws"
-    # Cloud Posse recommends pinning every module to a specific version
-    # version     = "x.x.x"
-    availability_zones   = var.availability_zones
-    namespace            = var.namespace
-    stage                = var.stage
-    name                 = var.name
-    attributes           = var.attributes
-    vpc_id               = module.vpc.vpc_id
-    igw_id               = module.vpc.igw_id
-    cidr_block           = module.vpc.vpc_cidr_block
-    nat_gateway_enabled  = false
-    nat_instance_enabled = false
-    tags                 = local.tags
-  }
+  kubernetes_version                                        = var.kubernetes_version
+  apply_config_map_aws_auth                                 = var.apply_config_map_aws_auth
+  cluster_encryption_config_enabled                         = true
+  cluster_log_retention_period                              = 30
+  cluster_encryption_config_kms_key_enable_key_rotation     = true
+  cluster_encryption_config_kms_key_deletion_window_in_days = 7
+  oidc_provider_enabled                                     = var.oidc_provider_enabled
+  kubernetes_config_map_ignore_role_changes                 = true // Defina como true para ignorar as alterações de papel do IAM no Kubernetes Auth ConfigMap
+  map_additional_iam_users = [
+    {
+      userarn  = "arn:aws:iam::ACCOUNT_ID:user/alyson.franklin"
+      username = "alyson.franklin"
+      groups   = ["system:masters"]
+    }
+  ]
+  map_additional_iam_roles = [
+    {
+      rolearn  = "arn:aws:iam::ACCOUNT_ID:role/JenkinsRoleForTerraform"
+      username = "JenkinsRoleForTerraform"
+      groups   = ["system:masters"]
+    }
+  ]
+  #workers_role_arns     = [module.eks_workers.workers_role_arn]
 
-  module "eks_workers" {
-    source = "cloudposse/eks-workers/aws"
-    # Cloud Posse recommends pinning every module to a specific version
-    # version     = "x.x.x"
-    namespace                          = var.namespace
-    stage                              = var.stage
-    name                               = var.name
-    attributes                         = var.attributes
-    tags                               = var.tags
-    instance_type                      = var.instance_type
-    eks_worker_ami_name_filter          = local.eks_worker_ami_name_filter
-    vpc_id                             = module.vpc.vpc_id
-    subnet_ids                         = module.subnets.public_subnet_ids
-    health_check_type                  = var.health_check_type
-    min_size                           = var.min_size
-    max_size                           = var.max_size
-    wait_for_capacity_timeout          = var.wait_for_capacity_timeout
-    cluster_name                       = module.label.id
-    cluster_endpoint                   = module.eks_cluster.eks_cluster_endpoint
-    cluster_certificate_authority_data = module.eks_cluster.eks_cluster_certificate_authority_data
-    cluster_security_group_id          = module.eks_cluster.security_group_id
-
-    # Auto-scaling policies and CloudWatch metric alarms
-    autoscaling_policies_enabled           = var.autoscaling_policies_enabled
-    cpu_utilization_high_threshold_percent = var.cpu_utilization_high_threshold_percent
-    cpu_utilization_low_threshold_percent  = var.cpu_utilization_low_threshold_percent
-  }
-
-  module "eks_cluster" {
-    source = "cloudposse/eks-cluster/aws"
-    # Cloud Posse recommends pinning every module to a specific version
-    # version     = "x.x.x"
-    namespace  = var.namespace
-    stage      = var.stage
-    name       = var.name
-    attributes = var.attributes
-    tags       = var.tags
-    vpc_id     = module.vpc.vpc_id
-    subnet_ids = module.subnets.public_subnet_ids
-
-    kubernetes_version    = var.kubernetes_version
-    oidc_provider_enabled = false
-    workers_role_arns     = [module.eks_workers.workers_role_arn]
-
-    security_group_rules = [
-      {
-        type                     = "egress"
-        from_port                = 0
-        to_port                  = 65535
-        protocol                 = "-1"
-        cidr_blocks              = ["0.0.0.0/0"]
-        source_security_group_id = null
-        description              = "Allow all outbound traffic"
-      },
-      {
-        type                     = "ingress"
-        from_port                = 0
-        to_port                  = 65535
-        protocol                 = "-1"
-        cidr_blocks              = []
-        source_security_group_id = module.eks_workers.security_group_id
-        description              = "Allow all inbound traffic from EKS workers Security Group"
-      }
-    ]
-  }
+  security_group_rules = [
+    {
+      type                     = "egress"
+      from_port                = 0
+      to_port                  = 65535
+      protocol                 = "-1"
+      cidr_blocks              = ["0.0.0.0/0"]
+      source_security_group_id = null
+      description              = "Allow all outbound traffic"
+    },
+    {
+      type                     = "ingress"
+      from_port                = 0
+      to_port                  = 65535
+      protocol                 = "-1"
+      cidr_blocks              = ["3.xx.x.x./32"] # IP da VPN
+      source_security_group_id = null
+      description              = "Allow all inbound traffic from EKS workers Security Group"
+    }
+  ]
+}
 ```
 
 Module usage with two worker groups:
