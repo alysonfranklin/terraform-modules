@@ -52,9 +52,9 @@ Other examples:
 - [terraform-root-modules/eks-backing-services-peering](https://github.com/cloudposse/terraform-root-modules/tree/master/aws/eks-backing-services-peering) - example of VPC peering between the EKS VPC and backing services VPC
 
 ```hcl
-  provider "aws" {
-    region = var.region
-  }
+provider "aws" {
+  region = var.region
+}
 
 module "label" {
   source    = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.24.1"
@@ -73,7 +73,7 @@ locals {
 }
 
 module "eks_cluster" {
-  source                    = "git::https://github.com/cloudposse/terraform-aws-eks-cluster.git?ref=tags/0.41.0"
+  source                    = "git::https://github.com/alysonfranklin/terraform-modules.git//modules/terraform-aws-eks-cluster?ref=0.41.0"
   namespace                 = "solfacil"
   stage                     = "stg"
   name                      = "eks"
