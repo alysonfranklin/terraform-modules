@@ -137,105 +137,142 @@ module "eks_cluster" {
 Module usage with two worker groups:
 
 ```hcl
-  module "eks_workers" {
-    source = "cloudposse/eks-workers/aws"
-    # Cloud Posse recommends pinning every module to a specific version
-    # version     = "x.x.x"
-    namespace                          = var.namespace
-    stage                              = var.stage
-    name                               = "small"
-    attributes                         = var.attributes
-    tags                               = var.tags
-    instance_type                      = "t3.small"
-    vpc_id                             = module.vpc.vpc_id
-    subnet_ids                         = module.subnets.public_subnet_ids
-    health_check_type                  = var.health_check_type
-    min_size                           = var.min_size
-    max_size                           = var.max_size
-    wait_for_capacity_timeout          = var.wait_for_capacity_timeout
-    cluster_name                       = module.label.id
-    cluster_endpoint                   = module.eks_cluster.eks_cluster_endpoint
-    cluster_certificate_authority_data = module.eks_cluster.eks_cluster_certificate_authority_data
-    cluster_security_group_id          = module.eks_cluster.security_group_id
+provider "aws" {
+  region = var.region
+}
 
-    # Auto-scaling policies and CloudWatch metric alarms
-    autoscaling_policies_enabled           = var.autoscaling_policies_enabled
-    cpu_utilization_high_threshold_percent = var.cpu_utilization_high_threshold_percent
-    cpu_utilization_low_threshold_percent  = var.cpu_utilization_low_threshold_percent
-  }
+module "label" {
+  source    = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.24.1"
+  namespace = "eks"
+  name      = "solfacil"
+  stage     = "stg"
+  delimiter = "-"
+  #attributes = ""
+  #tags       = var.tags
+}
 
-  module "eks_workers_2" {
-    source = "cloudposse/eks-workers/aws"
-    # Cloud Posse recommends pinning every module to a specific version
-    # version     = "x.x.x"
-    namespace                          = var.namespace
-    stage                              = var.stage
-    name                               = "medium"
-    attributes                         = var.attributes
-    tags                               = var.tags
-    instance_type                      = "t3.medium"
-    vpc_id                             = module.vpc.vpc_id
-    subnet_ids                         = module.subnets.public_subnet_ids
-    health_check_type                  = var.health_check_type
-    min_size                           = var.min_size
-    max_size                           = var.max_size
-    wait_for_capacity_timeout          = var.wait_for_capacity_timeout
-    cluster_name                       = module.label.id
-    cluster_endpoint                   = module.eks_cluster.eks_cluster_endpoint
-    cluster_certificate_authority_data = module.eks_cluster.eks_cluster_certificate_authority_data
-    cluster_security_group_id          = module.eks_cluster.security_group_id
+locals {
+  tags = merge(var.tags, map("kubernetes.io/cluster/${module.label.id}", "shared"))
 
-    # Auto-scaling policies and CloudWatch metric alarms
-    autoscaling_policies_enabled           = var.autoscaling_policies_enabled
-    cpu_utilization_high_threshold_percent = var.cpu_utilization_high_threshold_percent
-    cpu_utilization_low_threshold_percent  = var.cpu_utilization_low_threshold_percent
-  }
+  eks_worker_ami_name_filter = "amazon-eks-node-${var.kubernetes_version}*"
+}
 
-  module "eks_cluster" {
-    source = "cloudposse/eks-cluster/aws"
-    # Cloud Posse recommends pinning every module to a specific version
-    # version     = "x.x.x"
-    namespace  = var.namespace
-    stage      = var.stage
-    name       = var.name
-    attributes = var.attributes
-    tags       = var.tags
-    vpc_id     = module.vpc.vpc_id
-    subnet_ids = module.subnets.public_subnet_ids
+module "eks_cluster" {
+  source                    = "git::https://github.com/alysonfranklin/terraform-modules.git//modules/terraform-aws-eks-cluster?ref=0.41.0"
+  namespace                 = "solfacil"
+  stage                     = "stg"
+  name                      = "eks"
+  label_order               = ["name", "namespace", "stage", "attributes"]
+  tags                      = var.tags
+  vpc_id                    = var.vpc_id
+  subnet_ids                = var.subnet_ids
+  region                    = var.region
+  enabled_cluster_log_types = var.enabled_cluster_log_types
+  public_access_cidrs       = var.public_access_cidrs
+  endpoint_private_access   = var.endpoint_private_access
+  endpoint_public_access    = var.endpoint_public_access
 
-    kubernetes_version    = var.kubernetes_version
-    oidc_provider_enabled = false
-    workers_role_arns     = [module.eks_workers.workers_role_arn, module.eks_workers_2.workers_role_arn]
+  kubernetes_version                                        = var.kubernetes_version
+  apply_config_map_aws_auth                                 = var.apply_config_map_aws_auth
+  cluster_encryption_config_enabled                         = true
+  cluster_log_retention_period                              = 30
+  cluster_encryption_config_kms_key_enable_key_rotation     = true
+  cluster_encryption_config_kms_key_deletion_window_in_days = 7
+  oidc_provider_enabled                                     = var.oidc_provider_enabled
+  kubernetes_config_map_ignore_role_changes                 = true // Defina como true para ignorar as alterações de papel do IAM no Kubernetes Auth ConfigMap
+  map_additional_iam_users = [
+    {
+      userarn  = "arn:aws:iam::ACCOUNT_ID:user/alyson.franklin"
+      username = "alyson.franklin"
+      groups   = ["system:masters"]
+    }
+  ]
+  map_additional_iam_roles = [
+    {
+      rolearn  = "arn:aws:iam::ACCOUNT_ID:role/JenkinsRoleForTerraform"
+      username = "JenkinsRoleForTerraform"
+      groups   = ["system:masters"]
+    }
+  ]
+  #workers_role_arns     = [module.eks_workers.workers_role_arn]
 
-    security_group_rules = [
-      {
-        type                     = "egress"
-        from_port                = 0
-        to_port                  = 65535
-        protocol                 = "-1"
-        cidr_blocks              = ["0.0.0.0/0"]
-        source_security_group_id = null
-        description              = "Allow all outbound traffic"
-      },
-      {
-        type                     = "ingress"
-        from_port                = 0
-        to_port                  = 65535
-        protocol                 = "-1"
-        cidr_blocks              = []
-        source_security_group_id = module.eks_workers.security_group_id
-        description              = "Allow all inbound traffic from EKS workers Security Group"
-      },
-      {
-        type                     = "ingress"
-        from_port                = 0
-        to_port                  = 65535
-        protocol                 = "-1"
-        cidr_blocks              = []
-        source_security_group_id = module.eks_workers_2.security_group_id
-        description              = "Allow all inbound traffic from EKS workers Security Group"
-      }
-  }
+  security_group_rules = [
+    {
+      type                     = "egress"
+      from_port                = 0
+      to_port                  = 65535
+      protocol                 = "-1"
+      cidr_blocks              = ["0.0.0.0/0"]
+      source_security_group_id = null
+      description              = "Allow all outbound traffic"
+    },
+    {
+      type                     = "ingress"
+      from_port                = 0
+      to_port                  = 65535
+      protocol                 = "-1"
+      cidr_blocks              = ["3.xx.x.x./32"] # IP da VPN
+      source_security_group_id = null
+      description              = "Allow all inbound traffic from EKS workers Security Group"
+    }
+  ]
+}
+
+module "eks_node_group" {
+  source                    = "git::https://github.com/alysonfranklin/terraform-modules.git//modules/terraform-aws-eks-node-group?ref=0.21.0"
+  namespace                               = "solfacil"
+  name                                    = "eks"
+  stage                                   = "stg"
+  tags                                    = var.tags
+  subnet_ids                              = var.subnet_ids
+  instance_types                          = var.instance_types
+  desired_size                            = 8
+  min_size                                = 0
+  max_size                                = 30
+  cluster_name                            = var.cluster_name
+  kubernetes_version                      = var.kubernetes_version
+  capacity_type                           = "SPOT" # ON_DEMAND
+  metadata_http_endpoint                  = "enabled"
+  cluster_autoscaler_enabled              = true
+  create_before_destroy                   = true
+  disk_size                               = 20
+  disk_type                               = "gp3"
+  existing_workers_role_policy_arns       = ["arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM", "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"]
+  label_order                             = ["name", "namespace", "stage", "attributes"]
+  launch_template_disk_encryption_enabled = true
+  # kubelet_additional_options              = "--max-pods=100"
+  resources_to_tag                        = ["instance", "volume", "elastic-gpu", "spot-instances-request"]
+  kubernetes_labels                       = { "workload-type" : "traefik" } // Apenas nós com esse rótulo serão adicionados ao NLB
+  # before_cluster_joining_userdata       = local.bottlerocket_userdata
+  # after_cluster_joining_userdata        = "" # https://kubedex.com/90-days-of-aws-eks-in-production
+  # ami_image_id                          = "ami-0a703271661f18745" # AMI para usar no nodegroup - ignora a AMI do Launch Template
+  # service.beta.kubernetes.io/aws-load-balancer-target-node-labels: workload-type=traefik
+  # kubernetes_taints       = ""
+  # launch_template_name    = ""
+  # launch_template_version = ""
+  ec2_ssh_key           = "solfacil-staging" // KeyPar existente na AWS
+  remote_access_enabled = true               // Habilita SSH nos Workers
+  security_group_rules = [
+    {
+      type                     = "egress"
+      from_port                = 0
+      to_port                  = 65535
+      protocol                 = "-1"
+      cidr_blocks              = ["0.0.0.0/0"]
+      source_security_group_id = null
+      description              = "Allow all outbound traffic"
+    },
+    {
+      type                     = "ingress"
+      from_port                = 0
+      to_port                  = 65535
+      protocol                 = "-1"
+      cidr_blocks              = ["3.x.1xx.x/32"] # IP da VPN
+      source_security_group_id = null
+      description              = "Allow all inbound traffic from VPN"
+    }
+  ]
+}
 ```
 
 
